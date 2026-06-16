@@ -28,7 +28,9 @@ const CreateAnnonce = () => {
       formData.append('price', data.price)
       formData.append('city', data.city)
       formData.append('category_id', data.category_id)
-      formData.append('image', data.image[0]) // data.image est une FileList
+      if (data.image && data.image[0]) {
+        formData.append('image', data.image[0])
+      } 
 
       await api.post('/annonces', formData)
       alert("Annonce créée")
@@ -79,8 +81,7 @@ const CreateAnnonce = () => {
         <div>
           <label>Image</label>
           <input className="form-control" type="file" accept="image/*"
-            {...register("image", { required: "obligatoire" })} />
-          {errors.image && <p style={{ color: 'red' }}>{errors.image.message}</p>}
+            {...register("image")} />
         </div>
 
         <button type="submit">Créer l'annonce</button>
