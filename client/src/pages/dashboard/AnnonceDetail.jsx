@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/UseAuth"
 import api from "../../api/axios";
 
 
@@ -8,6 +9,8 @@ const AnnonceDetail = () => {
   const [annonce, setAnnonce] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchAnnonce = async () => {
@@ -27,6 +30,18 @@ const AnnonceDetail = () => {
 
     fetchAnnonce();
   }, [id]);
+
+  const handleDelete = async () => {
+    if (!window.confirm("Voulez-vous vraiment supprimer cette annonce ?")) return;
+    try {
+      await api.delete(`/annonces/${id}`);
+      alert("Annonce supprimée");
+      navigate("/annonces");
+    } catch (err) {
+      alert("Erreur lors de la suppression");
+      console.error(err);
+    }
+  };
 
   if (loading) return <p>Chargement...</p>;
   if (error) return <p>{error}</p>;
@@ -62,6 +77,24 @@ const AnnonceDetail = () => {
         <strong>Publié le :</strong>{" "}
         {new Date(annonce.created_at).toLocaleDateString()}
       </p>
+
+      {user && user.id === annonce.user_id && (
+        <button
+          onClick={handleDelete}
+          style={{
+            marginTop: "15px",
+            padding: "8px 16px",
+            backgroundColor: "#dc2626",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}
+        >
+          Supprimer l'annonce
+        </button>
+      )}
+
     </div>
   );
 };

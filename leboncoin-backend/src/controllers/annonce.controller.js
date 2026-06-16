@@ -122,7 +122,7 @@ export const deleteAnnonceById = async (req, res) => {
             return res.status(404).json({ message: 'Annonce introuvable' });
         }
 
-        if (existingAnnonce !== req.user.id) {
+        if (existingAnnonce.user_id !== req.user.id) {
             return res.status(403).json({ message: 'Action non autorisée' });
         }
         await model.deleteAnnonceById(id);
