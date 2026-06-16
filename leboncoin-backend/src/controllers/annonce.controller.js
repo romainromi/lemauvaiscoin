@@ -79,6 +79,11 @@ export const updateAnnonceById = async (req, res) => {
             return res.status(404).json({ message: 'Annonce introuvable' });
         }
 
+        // Vérifier que l'utilisateur connecté est le propriétaire
+        if (existingAnnonce.user_id !== req.user.id) {
+            return res.status(403).json({ message: 'Action non autorisée' });
+        }
+
         // Champs updatables uniquement
         const updatedData = {
             title: req.body.title ?? existingAnnonce.title,
@@ -111,11 +116,16 @@ export const deleteAnnonceById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const deleted = await model.deleteAnnonceById(id);
+        const existingAnnonce = await model.getAnnonceById(id);
 
-        if (!deleted) {
+        if (!existingAnnonce) {
             return res.status(404).json({ message: 'Annonce introuvable' });
         }
+
+        if (existingAnnonce !== req.user.id) {
+            return res.status(403).json({ message: 'Action non autorisée' });
+        }
+        await model.deleteAnnonceById(id);
 
         res.json({ message: 'Annonce supprimée' });
 
