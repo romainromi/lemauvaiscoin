@@ -34,8 +34,8 @@ app.use(express.json());
 // Activation du CORS pour autoriser les requêtes provenant d'autres domaines
 // Indispensable pour une communication frontend ↔ backend
 app.use(cors({
-    origin: 'http://localhost:5173', // URL du front Vite
-    credentials: true                // autorise les cookies
+  origin: ['http://localhost:5173', 'https://lemauvaiscoin.vercel.app'],
+  credentials: true // autorise les cookies
 }));
 
 // Activation de Helmet pour renforcer la sécurité HTTP
